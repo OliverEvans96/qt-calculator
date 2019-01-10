@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connectButtons();
-    captureKeys();
 }
 
 MainWindow::~MainWindow()
@@ -41,11 +40,55 @@ void MainWindow::connectButtons()
 
     connect(ui->buttonClear, &QPushButton::clicked, [=] (void) -> void {clear();});
     connect(ui->buttonClearAll, &QPushButton::clicked, [=] (void) -> void {clearAll();});
+    connect(ui->buttonEqual, &QPushButton::clicked, [=] (void) -> void {compute();});
 }
 
-void MainWindow::captureKeys()
+void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    switch(event->key())
+    {
+        case Qt::Key_0: appendDisplay('0');
+             break;
+        case Qt::Key_1: appendDisplay('1');
+             break;
+        case Qt::Key_2: appendDisplay('2');
+             break;
+        case Qt::Key_3: appendDisplay('3');
+             break;
+        case Qt::Key_4: appendDisplay('4');
+             break;
+        case Qt::Key_5: appendDisplay('5');
+             break;
+        case Qt::Key_6: appendDisplay('6');
+             break;
+        case Qt::Key_7: appendDisplay('7');
+             break;
+        case Qt::Key_8: appendDisplay('8');
+             break;
+        case Qt::Key_9: appendDisplay('9');
+             break;
 
+        case Qt::Key_Plus: appendDisplay('+');
+             break;
+        case Qt::Key_Minus: appendDisplay('-');
+             break;
+        case Qt::Key_Asterisk: appendDisplay('*');
+             break;
+        case Qt::Key_Slash: appendDisplay('/');
+             break;
+
+        case Qt::Key_Period: appendDisplay('.');
+             break;
+        case Qt::Key_ParenLeft: appendDisplay('(');
+             break;
+        case Qt::Key_ParenRight: appendDisplay(')');
+             break;
+
+        case Qt::Key_Backspace: clear();
+             break;
+        case Qt::Key_Return: compute();
+             break;
+        }
 }
 
 void MainWindow::appendDisplay(char c)
@@ -65,4 +108,10 @@ void MainWindow::clearAll()
 {
     ui->numberDisplay->setText("");
     std::cout << "Clear all: '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+}
+
+void MainWindow::compute()
+{
+    std::cout << "Compute!" << std::endl;
+    clearAll();
 }

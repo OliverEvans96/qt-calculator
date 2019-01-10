@@ -292,6 +292,9 @@
     <property name="readOnly">
      <bool>true</bool>
     </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
