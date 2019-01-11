@@ -34,6 +34,7 @@ private:
   void handleParenthesis(char c);
   double getNumberFromOutputQueue();
   void finalizeNumber();
+  int countDots(std::string s);
 
   bool frontOperatorHasEqualPrecedence(char c);
   bool frontOperatorHasLowerPrecedence(char c);

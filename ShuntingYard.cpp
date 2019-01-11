@@ -363,8 +363,12 @@ double ShuntingYard::getNumberFromOutputQueue()
 {
     std::string s = outputQueue.front();
 
-    // Make sure we don't try to convert a single minus sign
-    if(s.data()[0] == '-' && s.length() == 1)
+    if(
+        // Make sure we don't try to convert a single minus sign or period
+        (s.length() == 1 && (s.data()[0] == '-' || s.data()[0] == '.'))
+        // Shouldn't have more than one dot
+        || countDots(s) > 1
+    )
     {
         handleSyntaxError();
         return 0;
@@ -382,6 +386,17 @@ void ShuntingYard::finalizeNumber()
     isNumberQueue.push(true);
     numberStr = "";
   }
+}
+
+int ShuntingYard::countDots(std::string s)
+{
+    int n = 0;
+    for(unsigned i=0; i<s.length(); i++)
+    {
+       if(s[i] == '.')
+           n++;
+    }
+    return n;
 }
 
 void ShuntingYard::handleSyntaxError()
