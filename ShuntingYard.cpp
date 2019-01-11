@@ -20,7 +20,6 @@ void ShuntingYard::reset()
 void ShuntingYard::parseInfix(std::string infixStr)
 {
   // Read symbols
-  std::cout << "PI.readSymbols" << std::endl;
   for(unsigned i=0; i<infixStr.length(); i++)
   {
     parseSymbol(infixStr[i]);
@@ -30,25 +29,19 @@ void ShuntingYard::parseInfix(std::string infixStr)
   finalizeNumber();
 
   // Pop remaining operators
-  std::cout << "PI.pop" << std::endl;
   while(operatorStack.size() > 0)
   {
     // TODO: Handle mismatched parens
     popOperator();
   }
-
-  std::cout << "PI.done" << std::endl;
 }
 
 void ShuntingYard::printRPN()
 {
   std::queue<std::string> copyQueue(outputQueue);
-  std::cout << "RPN: ";
   while(copyQueue.size() > 0) {
-    std::cout << "'" << copyQueue.front() << "' ";
     copyQueue.pop();
   }
-  std::cout << std::endl;
 }
 
 double ShuntingYard::evaluateRPN()
@@ -58,16 +51,12 @@ double ShuntingYard::evaluateRPN()
   double operand2 = 0;
   std::stack<double> operandStack;
   std::string oper;
-  std::cout << "output queue size = " << outputQueue.size() << std::endl;
   while(outputQueue.size() > 0)
   {
-    std::cout << "eval (" << outputQueue.front() << ")" << std::endl;
 
     // Handle operand
     if(isNumberQueue.front())
     {
-      std::cout << "number." << std::endl;
-      std::cout << "convert '" << outputQueue.front() << "' to number." << std::endl;
       operandStack.push(std::stod(outputQueue.front()));
       outputQueue.pop();
       isNumberQueue.pop();
@@ -77,7 +66,6 @@ double ShuntingYard::evaluateRPN()
     else
     {
         // Get operator
-        std::cout << "operator." << std::endl;
         oper = outputQueue.front();
         outputQueue.pop();
         isNumberQueue.pop();
@@ -86,10 +74,7 @@ double ShuntingYard::evaluateRPN()
         operandStack.pop();
         operand1 = operandStack.top();
         operandStack.pop();
-        std::cout << "operand1 = " << operand1 << std::endl;
-        std::cout << "operand2 = " << operand2 << std::endl;
         result = applyOperator(oper, operand1, operand2);
-        std::cout << "result = " << result << std::endl;
         operandStack.push(result);
     }
   }
@@ -100,7 +85,6 @@ double ShuntingYard::evaluateRPN()
 
 void ShuntingYard::parseSymbol(char c)
 {
-  std::cout << "parse '" << c << "'" << std::endl;
   switch(c)
   {
     // Numbers
@@ -159,7 +143,6 @@ bool ShuntingYard::isUnaryMinus()
 
 void ShuntingYard::handleInfixOperator(char c)
 {
-  std::cout << "handleInfix: '" << c << "'" << std::endl;
   finalizeNumber();
 
   while(
@@ -174,7 +157,6 @@ void ShuntingYard::handleInfixOperator(char c)
 int ShuntingYard::getOperatorPrecedence(char c)
 {
   // Higher precedence operators are evaluated first
-  std::cout << "getOperatorPrecedence '" << c << "'" << std::endl;
   switch(c)
   {
     case '^':
@@ -195,7 +177,6 @@ int ShuntingYard::getOperatorPrecedence(char c)
 
 bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 {
-  std::cout << "frontOperatorHasLowerPrecedence '" << c << "'" << std::endl;
   if(operatorStack.size() > 0)
     return getOperatorPrecedence(operatorStack.top()) < getOperatorPrecedence(c);
 
@@ -206,7 +187,6 @@ bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 
 bool ShuntingYard::frontOperatorIsNotLeftParenthesis()
 {
-  std::cout << "frontOperatorIsNotLeftParenthesis" << std::endl;
   if(operatorStack.size() > 0)
     return operatorStack.top() != '(';
   else
@@ -215,8 +195,6 @@ bool ShuntingYard::frontOperatorIsNotLeftParenthesis()
 
 void ShuntingYard::popOperator()
 {
-  std::cout << "popOperator (" << operatorStack.size() << ")" << std::endl;
-  std::cout << "pop '" << operatorStack.top() << "'" << std::endl;
   std::stringstream ss;
   std::string s(1, operatorStack.top());
   outputQueue.push(s);
@@ -253,7 +231,6 @@ double ShuntingYard::applyOperator(std::string oper, double operand1, double ope
 
 void ShuntingYard::handleParenthesis(char c)
 {
-  std::cout << "handleParenthesis '" << c << "'" << std::endl;
   finalizeNumber();
 
   switch(c)
@@ -274,7 +251,6 @@ void ShuntingYard::handleParenthesis(char c)
 
 void ShuntingYard::finalizeNumber()
 {
-  std::cout << "finalizeNumber '" << numberStr << "'" << std::endl;
   // Finish handling number if we were previously doing so
   if(numberStr.length() > 0) {
     outputQueue.push(numberStr);

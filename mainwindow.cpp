@@ -92,7 +92,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::appendDisplay(char c)
 {
     ui->inputDisplay->setText(ui->inputDisplay->text().append(c));
-    std::cout << "Appending " << c << ": '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
 }
 
 void MainWindow::clear()
@@ -100,7 +99,6 @@ void MainWindow::clear()
     if(ui->inputDisplay->text().size() > 0)
     {
         ui->inputDisplay->setText(ui->inputDisplay->text().chopped(1));
-        std::cout << "Clear: '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
     }
 
 }
@@ -108,22 +106,15 @@ void MainWindow::clear()
 void MainWindow::clearAll()
 {
     ui->inputDisplay->setText("");
-    std::cout << "Clear all: '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
 }
 
 void MainWindow::compute()
 {
     std::string inputStr(ui->inputDisplay->text().toUtf8().data());
-    std::cout << "Compute!" << std::endl;
     shuntingYard.reset();
-    std::cout << "Parsing infix:" << "'" << inputStr << "'" << std::endl;
     shuntingYard.parseInfix(inputStr);
-    std::cout << "PrintRPN" << std::endl;
-    std::cout << "input: '" << inputStr << "'" << std::endl;
     shuntingYard.printRPN();
-    std::cout << "EvaluateRPN" << std::endl;
     double result = shuntingYard.evaluateRPN();
-    std::cout << "= " << result << std::endl;
     ui->resultDisplay->display(result);
     ui->oldInputDisplay->setText(ui->inputDisplay->text().append(" ="));
     clearAll();
