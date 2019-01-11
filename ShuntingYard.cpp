@@ -55,7 +55,6 @@ void ShuntingYard::printRPN()
 
 double ShuntingYard::evaluateRPN()
 {
-  std::cout << "eval" << std::endl;
   double result = 0;
   double operand1 = 0;
   double operand2 = 0;
