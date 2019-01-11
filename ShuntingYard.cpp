@@ -130,6 +130,7 @@ void ShuntingYard::parseSymbol(char c)
     case '+':
     case '*':
     case '/':
+    case '^':
       handleInfixOperator(c);
       break;
 
@@ -319,7 +320,8 @@ double ShuntingYard::applyOperator(std::string oper, double operand1, double ope
     }
     if(oper == "^")
     {
-        if((std::abs(operand1)<1e-10)&&(std::abs(operand2)<1e-10))
+        // Avoid raising 0 to non-positive power
+        if((std::abs(operand1)<1e-10)&&operand2<1e-10)
         {
             fail(1);
             return 0;
