@@ -25,9 +25,13 @@ make
 ./calculator
 ```
 
-## Screenshot
+## Screenshots
 
 How beautiful :blush:
 
 ![](calculator-screenshot.png)
+
+Oh no!
+
+![](calculator-screenshot-err.png)
 
