@@ -19,10 +19,13 @@ void ShuntingYard::reset()
 
 void ShuntingYard::parseInfix(std::string infixStr)
 {
+  char c;
   // Read symbols
   for(unsigned i=0; i<infixStr.length(); i++)
   {
-    parseSymbol(infixStr[i]);
+    c = infixStr[i];
+    if (c != ' ')
+      parseSymbol(infixStr[i]);
   }
 
   // Finish parsing last number if applicable
