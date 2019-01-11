@@ -9,3 +9,10 @@ Written in C++ / Qt.
 ## Screenshot
 
 ![](calculator-screenshot.png)
+
+## Usage
+
+```
+make
+./calculator
+```
