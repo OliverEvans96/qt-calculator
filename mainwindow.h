@@ -32,6 +32,7 @@ private:
     void clearInput();
     void clearAll();
     void compute();
+    void handleErrors();
 
     ShuntingYard shuntingYard;
 };

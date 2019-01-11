@@ -20,6 +20,9 @@ public:
   void printRPN();
   double evaluateRPN();
 
+  bool checkError();
+  std::string getErrorString();
+
 private:
 
   void parseSymbol(char c);
@@ -31,12 +34,15 @@ private:
 
   bool frontOperatorHasLowerPrecedence(char c);
   bool frontOperatorIsNotLeftParenthesis();
+  bool frontOperatorIsNotRightParenthesis();
+  bool frontOperatorIsNotParenthesis();
 
   void popOperator();
   double applyOperator(std::string oper, double operand1, double operand2);
 
-  void handleMismatchedParentheses();
-  void fail();
+  void handleDivideByZero();
+  void handleSyntaxError();
+  void fail(int err);
 
   std::stack<char> operatorStack;
   std::string inputStr;
@@ -44,6 +50,7 @@ private:
   std::queue<bool> isNumberQueue;
   std::string numberStr;
   char lastSymbol;
+  int errorCode;
 };
 
 #endif // SHUNTING_YARD_H

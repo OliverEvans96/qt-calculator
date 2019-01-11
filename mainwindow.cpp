@@ -147,4 +147,12 @@ void MainWindow::compute()
     ui->resultDisplay->display(result);
     ui->oldInputDisplay->setText(ui->inputDisplay->text().append(" ="));
     clearInput();
+    handleErrors();
+}
+
+void MainWindow::handleErrors()
+{
+    ui->statusBar->showMessage(QString::fromStdString(shuntingYard.getErrorString()));
+    if(shuntingYard.checkError())
+        ui->resultDisplay->display("Error");
 }

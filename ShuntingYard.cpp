@@ -9,6 +9,7 @@ void ShuntingYard::reset()
 {
   lastSymbol = '\0';
   numberStr = "";
+  errorCode = 0;
 
   // Empty stacks
   while(operatorStack.size() > 0)
@@ -34,8 +35,13 @@ void ShuntingYard::parseInfix(std::string infixStr)
   // Pop remaining operators
   while(operatorStack.size() > 0)
   {
-    // TODO: Handle mismatched parens
-    popOperator();
+    if(frontOperatorIsNotParenthesis())
+        popOperator();
+    else
+    {
+        handleSyntaxError();
+        return;
+    }
   }
 }
 
@@ -49,6 +55,7 @@ void ShuntingYard::printRPN()
 
 double ShuntingYard::evaluateRPN()
 {
+  std::cout << "eval" << std::endl;
   double result = 0;
   double operand1 = 0;
   double operand2 = 0;
@@ -196,6 +203,20 @@ bool ShuntingYard::frontOperatorIsNotLeftParenthesis()
     return false;
 }
 
+bool ShuntingYard::frontOperatorIsNotRightParenthesis()
+{
+  if(operatorStack.size() > 0)
+    return operatorStack.top() != ')';
+  else
+    return false;
+}
+
+bool ShuntingYard::frontOperatorIsNotParenthesis()
+{
+    return frontOperatorIsNotLeftParenthesis()
+            && frontOperatorIsNotRightParenthesis();
+}
+
 void ShuntingYard::popOperator()
 {
   std::stringstream ss;
@@ -221,7 +242,7 @@ double ShuntingYard::applyOperator(std::string oper, double operand1, double ope
             return operand1 / operand2;
         else
         {
-            fail();
+            fail(1);
             return 0;
         }
     }
@@ -245,7 +266,10 @@ void ShuntingYard::handleParenthesis(char c)
       if(operatorStack.top() == '(')
         operatorStack.pop();
       else
-        handleMismatchedParentheses();
+      {
+        handleSyntaxError();
+        return;
+      }
   }
 }
 
@@ -260,12 +284,36 @@ void ShuntingYard::finalizeNumber()
   }
 }
 
-void ShuntingYard::handleMismatchedParentheses()
+void ShuntingYard::handleSyntaxError()
 {
-  fail();
+  fail(2);
 }
 
-void ShuntingYard::fail()
+void ShuntingYard::handleDivideByZero()
 {
-    std::cout << "FAIL" << std::endl;
+  fail(1);
+}
+
+void ShuntingYard::fail(int err)
+{
+    std::cout << "FAIL " << err << std::endl;
+    errorCode = err;
+}
+
+bool ShuntingYard::checkError()
+{
+    if(errorCode != 0)
+        return true;
+    else
+        return false;
+}
+
+std::string ShuntingYard::getErrorString()
+{
+    switch(errorCode)
+    {
+        case(1): return "Divide by zero";
+        case(2): return "Syntax Error";
+        default: return "";
+    }
 }
