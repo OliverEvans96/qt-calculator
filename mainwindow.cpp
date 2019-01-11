@@ -121,5 +121,8 @@ void MainWindow::compute()
     std::cout << "PrintRPN" << std::endl;
     std::cout << "input: '" << inputStr << "'" << std::endl;
     shuntingYard.printRPN();
+    std::cout << "EvaluateRPN" << std::endl;
+    double result = shuntingYard.evaluateRPN();
+    std::cout << "= " << result << std::endl;
     clearAll();
 }

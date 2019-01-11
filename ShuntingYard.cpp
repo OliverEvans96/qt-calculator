@@ -42,13 +42,60 @@ void ShuntingYard::parseInfix(std::string infixStr)
 
 void ShuntingYard::printRPN()
 {
-    std::queue<std::string> copyQueue(outputQueue);
-    std::cout << "RPN: ";
-    while(copyQueue.size() > 0) {
-        std::cout << "'" << copyQueue.front() << "' ";
-        copyQueue.pop();
+  std::queue<std::string> copyQueue(outputQueue);
+  std::cout << "RPN: ";
+  while(copyQueue.size() > 0) {
+    std::cout << "'" << copyQueue.front() << "' ";
+    copyQueue.pop();
+  }
+  std::cout << std::endl;
+}
+
+double ShuntingYard::evaluateRPN()
+{
+  double result = 0;
+  double operand1 = 0;
+  double operand2 = 0;
+  std::stack<double> operandStack;
+  std::string oper;
+  std::cout << "output queue size = " << outputQueue.size() << std::endl;
+  while(outputQueue.size() > 0)
+  {
+    std::cout << "eval (" << outputQueue.front() << ")" << std::endl;
+
+    // Handle operand
+    if(isNumberQueue.front())
+    {
+      std::cout << "number." << std::endl;
+      std::cout << "convert '" << outputQueue.front() << "' to number." << std::endl;
+      operandStack.push(std::stod(outputQueue.front()));
+      outputQueue.pop();
+      isNumberQueue.pop();
     }
-    std::cout << std::endl;
+
+    // Handle operator
+    else
+    {
+        // Get operator
+        std::cout << "operator." << std::endl;
+        oper = outputQueue.front();
+        outputQueue.pop();
+        isNumberQueue.pop();
+
+        operand2 = operandStack.top();
+        operandStack.pop();
+        operand1 = operandStack.top();
+        operandStack.pop();
+        std::cout << "operand1 = " << operand1 << std::endl;
+        std::cout << "operand2 = " << operand2 << std::endl;
+        result = applyOperator(oper, operand1, operand2);
+        std::cout << "result = " << result << std::endl;
+        operandStack.push(result);
+    }
+  }
+  result = operandStack.top();
+  operandStack.pop();
+  return result;
 }
 
 void ShuntingYard::parseSymbol(char c)
@@ -173,7 +220,35 @@ void ShuntingYard::popOperator()
   std::stringstream ss;
   std::string s(1, operatorStack.top());
   outputQueue.push(s);
+  // This is not a numbe
+  isNumberQueue.push(false);
   operatorStack.pop();
+}
+
+double ShuntingYard::applyOperator(std::string oper, double operand1, double operand2)
+{
+    char c;
+    c = oper.data()[0];
+    switch(c)
+    {
+    case '+':
+        return operand1 + operand2;
+    case '-':
+        return operand1 - operand2;
+    case '*':
+        return operand1 * operand2;
+    case '/':
+        // Avoid division by zero
+        if (std::abs(operand2) > 1e-10)
+            return operand1 / operand2;
+        else
+        {
+            fail();
+            return 0;
+        }
+    default:
+        return 0;
+    }
 }
 
 void ShuntingYard::handleParenthesis(char c)
@@ -203,6 +278,8 @@ void ShuntingYard::finalizeNumber()
   // Finish handling number if we were previously doing so
   if(numberStr.length() > 0) {
     outputQueue.push(numberStr);
+    // This is a number
+    isNumberQueue.push(true);
     numberStr = "";
   }
 }

@@ -18,7 +18,7 @@ public:
   void reset();
   void parseInfix(std::string infixStr);
   void printRPN();
-  void evaluateRPN();
+  double evaluateRPN();
 
 private:
 
@@ -31,7 +31,9 @@ private:
 
   bool frontOperatorHasLowerPrecedence(char c);
   bool frontOperatorIsNotLeftParenthesis();
+
   void popOperator();
+  double applyOperator(std::string oper, double operand1, double operand2);
 
   void handleMismatchedParentheses();
   void fail();
@@ -39,6 +41,7 @@ private:
   std::stack<char> operatorStack;
   std::string inputStr;
   std::queue<std::string> outputQueue;
+  std::queue<bool> isNumberQueue;
   std::string numberStr;
   char lastSymbol;
 };
