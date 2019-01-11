@@ -82,7 +82,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_ParenRight: appendDisplay(')');
              break;
 
-        case Qt::Key_Backspace: clear();
+        case Qt::Key_Backspace:
+            if(event->modifiers().testFlag(Qt::ControlModifier))
+                clearAll();
+            else
+                clear();
              break;
         case Qt::Key_Equal:
         case Qt::Key_Return: compute();
@@ -104,9 +108,21 @@ void MainWindow::clear()
 
 }
 
-void MainWindow::clearAll()
+void MainWindow::clearInput()
 {
     ui->inputDisplay->setText("");
+}
+
+void MainWindow::clearResult()
+{
+    ui->oldInputDisplay->setText("");
+    ui->resultDisplay->display(0);
+}
+
+void MainWindow::clearAll()
+{
+    clearInput();
+    clearResult();
 }
 
 void MainWindow::compute()
@@ -118,5 +134,5 @@ void MainWindow::compute()
     double result = shuntingYard.evaluateRPN();
     ui->resultDisplay->display(result);
     ui->oldInputDisplay->setText(ui->inputDisplay->text().append(" ="));
-    clearAll();
+    clearInput();
 }

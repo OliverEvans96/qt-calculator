@@ -27,6 +27,8 @@ private:
     void keyPressEvent(QKeyEvent *event);
     void appendDisplay(char c);
     void clear();
+    void clearResult();
+    void clearInput();
     void clearAll();
     void compute();
 
