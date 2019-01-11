@@ -32,6 +32,7 @@ void MainWindow::connectButtons()
     connect(ui->buttonSubtract, &QPushButton::clicked, [=] (void) -> void {appendDisplay(" - ");});
     connect(ui->buttonMultiply, &QPushButton::clicked, [=] (void) -> void {appendDisplay(" * ");});
     connect(ui->buttonDivide, &QPushButton::clicked, [=] (void) -> void {appendDisplay(" / ");});
+    connect(ui->buttonPower, &QPushButton::clicked, [=] (void) -> void {appendDisplay(" ^ ");});
 
     connect(ui->buttonParenL, &QPushButton::clicked, [=] (void) -> void {appendDisplay("(");});
     connect(ui->buttonParenR, &QPushButton::clicked, [=] (void) -> void {appendDisplay(")");});
@@ -44,6 +45,7 @@ void MainWindow::connectButtons()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+    std::cout << "KEY '" << QKeySequence(event->key()).toString().toUtf8().data() << "'" << std::endl;
     switch(event->key())
     {
         case Qt::Key_0: appendDisplay("0");
@@ -74,6 +76,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Asterisk: appendDisplay(" * ");
              break;
         case Qt::Key_Slash: appendDisplay(" / ");
+             break;
+        case Qt::Key_AsciiCircum: appendDisplay(" ^ ");
              break;
 
         case Qt::Key_Period: appendDisplay(".");

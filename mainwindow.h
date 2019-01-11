@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QKeySequence>
 #include <QString>
 #include <iostream>
 

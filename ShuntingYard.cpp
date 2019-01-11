@@ -170,8 +170,9 @@ void ShuntingYard::handleInfixOperator(char c)
   finalizeNumber();
 
   while(
-        !frontOperatorHasLowerPrecedence(c)
-        && frontOperatorIsNotLeftParenthesis()
+        (frontOperatorHasHigherPrecedence(c)
+        || (frontOperatorHasEqualPrecedence(c) && frontOperatorIsLeftAssociative())
+        ) && frontOperatorIsNotLeftParenthesis()
     )
     popOperator();
 
@@ -199,6 +200,35 @@ int ShuntingYard::getOperatorPrecedence(char c)
   }
 }
 
+int ShuntingYard::getOperatorAssociativity(char c)
+{
+  // 0 = left-associative
+  // 1 = right-associative
+  switch(c)
+  {
+    case '^':
+      return 1;
+
+    case '*':
+    case '/':
+    case '+':
+    case '-':
+      return 0;
+
+    default:
+      return 0;
+  }
+}
+
+bool ShuntingYard::frontOperatorHasEqualPrecedence(char c)
+{
+  if(operatorStack.size() > 0)
+    return getOperatorPrecedence(operatorStack.top()) == getOperatorPrecedence(c);
+
+  else
+    return false;
+}
+
 bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 {
   if(operatorStack.size() > 0)
@@ -206,8 +236,26 @@ bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 
   else
     return false;
-
 }
+
+bool ShuntingYard::frontOperatorHasHigherPrecedence(char c)
+{
+  if(operatorStack.size() > 0)
+    return getOperatorPrecedence(operatorStack.top()) > getOperatorPrecedence(c);
+
+  else
+    return false;
+}
+
+bool ShuntingYard::frontOperatorIsLeftAssociative()
+{
+  std::cout << "frontOperatorIsLeftAssociative" << std::endl;
+  if(operatorStack.size() > 0)
+    return getOperatorAssociativity(operatorStack.top()) == 0;
+  else
+    return false;
+}
+
 
 bool ShuntingYard::frontOperatorIsLeftParenthesis()
 {
@@ -269,8 +317,21 @@ double ShuntingYard::applyOperator(std::string oper, double operand1, double ope
             return 0;
         }
     }
+    if(oper == "^")
+    {
+        if((std::abs(operand1)<1e-10)&&(std::abs(operand2)<1e-10))
+        {
+            fail(1);
+            return 0;
+        }
+        else
+        {
+            return pow(operand1, operand2);
+        }
+    }
     else
         return 0;
+
 }
 
 void ShuntingYard::handleParenthesis(char c)

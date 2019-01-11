@@ -2,6 +2,7 @@
 #define SHUNTING_YARD_H
 
 #include <iostream>
+#include <cmath>
 #include <stack>
 #include <queue>
 #include <string>
@@ -29,11 +30,15 @@ private:
   bool isUnaryMinus();
   void handleInfixOperator(char c);
   int getOperatorPrecedence(char c);
+  int getOperatorAssociativity(char c);
   void handleParenthesis(char c);
   double getNumberFromOutputQueue();
   void finalizeNumber();
 
+  bool frontOperatorHasEqualPrecedence(char c);
   bool frontOperatorHasLowerPrecedence(char c);
+  bool frontOperatorHasHigherPrecedence(char c);
+  bool frontOperatorIsLeftAssociative();
   bool frontOperatorIsNotLeftParenthesis();
   bool frontOperatorIsLeftParenthesis();
   bool frontOperatorIsNotRightParenthesis();
