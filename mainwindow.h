@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QString>
 #include <iostream>
 
 #include "ShuntingYard.h"
@@ -25,7 +26,7 @@ private:
     Ui::MainWindow *ui;
     void connectButtons();
     void keyPressEvent(QKeyEvent *event);
-    void appendDisplay(char c);
+    void appendDisplay(std::string s);
     void clear();
     void clearResult();
     void clearInput();
