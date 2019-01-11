@@ -208,17 +208,14 @@ void ShuntingYard::popOperator()
 
 double ShuntingYard::applyOperator(std::string oper, double operand1, double operand2)
 {
-    char c;
-    c = oper.data()[0];
-    switch(c)
-    {
-    case '+':
+    if(oper == "+")
         return operand1 + operand2;
-    case '-':
+    if(oper == "-")
         return operand1 - operand2;
-    case '*':
+    if(oper == "*")
         return operand1 * operand2;
-    case '/':
+    if(oper == "/")
+    {
         // Avoid division by zero
         if (std::abs(operand2) > 1e-10)
             return operand1 / operand2;
@@ -227,9 +224,9 @@ double ShuntingYard::applyOperator(std::string oper, double operand1, double ope
             fail();
             return 0;
         }
-    default:
-        return 0;
     }
+    else
+        return 0;
 }
 
 void ShuntingYard::handleParenthesis(char c)
