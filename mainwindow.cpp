@@ -45,7 +45,6 @@ void MainWindow::connectButtons()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    std::cout << "KEY '" << QKeySequence(event->key()).toString().toUtf8().data() << "'" << std::endl;
     switch(event->key())
     {
         case Qt::Key_0: appendDisplay("0");
