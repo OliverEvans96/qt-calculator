@@ -102,11 +102,22 @@ void MainWindow::appendDisplay(std::string s)
 
 void MainWindow::clear()
 {
-    if(ui->inputDisplay->text().size() > 0)
+    int len;
+    int num2chop = 1;
+    len = ui->inputDisplay->text().size();
+    if(len > 0)
     {
-        ui->inputDisplay->setText(ui->inputDisplay->text().chopped(1));
+        // Chop off three characters if last character is a space
+        // since operators are surrounded by spaces
+        if(len > 1)
+        {
+           if(ui->inputDisplay->text().back() == ' ')
+           {
+               num2chop = 3;
+           }
+        }
+        ui->inputDisplay->setText(ui->inputDisplay->text().chopped(num2chop));
     }
-
 }
 
 void MainWindow::clearInput()
