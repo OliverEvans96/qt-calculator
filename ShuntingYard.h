@@ -2,40 +2,44 @@
 #define SHUNTING_YARD_H
 
 #include <iostream>
+#include <stack>
 #include <queue>
 #include <string>
+#include <sstream>
 
-namespace ShuntingYard {
+namespace ShuntingYardNamespace {
   class ShuntingYard;
 }
 
 class ShuntingYard
 {
 public:
+  ShuntingYard();
   void reset();
-  void parseInfix(std::str infixStr);
+  void parseInfix(std::string infixStr);
+  void printRPN();
   void evaluateRPN();
 
 private:
 
-  void parseSymbol();
-  void isUnaryMinus();
+  void parseSymbol(char c);
+  bool isUnaryMinus();
   void handleInfixOperator(char c);
-  void getOperatorPrecedence(char c);
+  int getOperatorPrecedence(char c);
   void handleParenthesis(char c);
   void finalizeNumber();
 
-  void frontOperatorHasLowerPrecedence(char c);
-  void frontOperatorIsNotLeftParenthesis();
+  bool frontOperatorHasLowerPrecedence(char c);
+  bool frontOperatorIsNotLeftParenthesis();
   void popOperator();
 
   void handleMismatchedParentheses();
   void fail();
 
-  std::queue operatorQueue;
-  std::str inputStr;
-  std::queue outputQueue;
-  std::str numberStr;
+  std::stack<char> operatorStack;
+  std::string inputStr;
+  std::queue<std::string> outputQueue;
+  std::string numberStr;
   char lastSymbol;
 };
 

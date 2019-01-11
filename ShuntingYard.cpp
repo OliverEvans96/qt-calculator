@@ -5,31 +5,56 @@ ShuntingYard::ShuntingYard()
   reset();
 }
 
-ShuntingYard::reset()
+void ShuntingYard::reset()
 {
   lastSymbol = '\0';
   numberStr = "";
+
+  // Empty stacks
+  while(operatorStack.size() > 0)
+      operatorStack.pop();
+  while(outputQueue.size() > 0)
+      outputQueue.pop();
 }
 
-ShuntingYard::parseInfix(std::str infixStr)
+void ShuntingYard::parseInfix(std::string infixStr)
 {
   // Read symbols
-  for(int i=0; i<infixStr.length(); i++)
+  std::cout << "PI.readSymbols" << std::endl;
+  for(unsigned i=0; i<infixStr.length(); i++)
   {
     parseSymbol(infixStr[i]);
   }
 
+  // Finish parsing last number if applicable
+  finalizeNumber();
+
   // Pop remaining operators
-  while(operatorQueue.size() > 0)
+  std::cout << "PI.pop" << std::endl;
+  while(operatorStack.size() > 0)
   {
     // TODO: Handle mismatched parens
     popOperator();
   }
+
+  std::cout << "PI.done" << std::endl;
 }
 
-ShuntingYard::parseSymbol(char c)
+void ShuntingYard::printRPN()
 {
-  switch c
+    std::queue<std::string> copyQueue(outputQueue);
+    std::cout << "RPN: ";
+    while(copyQueue.size() > 0) {
+        std::cout << "'" << copyQueue.front() << "' ";
+        copyQueue.pop();
+    }
+    std::cout << std::endl;
+}
+
+void ShuntingYard::parseSymbol(char c)
+{
+  std::cout << "parse '" << c << "'" << std::endl;
+  switch(c)
   {
     // Numbers
     case '0':
@@ -43,51 +68,51 @@ ShuntingYard::parseSymbol(char c)
     case '8':
     case '9':
     case '.':
-      numberStr.append(c);
+      numberStr.append(1, c);
       break;
 
     // Infix operators
     case '+':
     case '*':
     case '/':
-      handleInfixOperator(c)
+      handleInfixOperator(c);
       break;
 
     // Parentheses
     case '(':
     case ')':
-      handleParenthesis(c)
+      handleParenthesis(c);
       break;
 
     // Infix OR unary minus
     case '-':
-      if(isUnaryMinus(c))
-        handleUnaryMinus();
-      else:
-        numberStr.append(c)
+      if(isUnaryMinus())
+        numberStr.append(1, c);
+      else
+        handleInfixOperator(c);
       break;
   }
 
   lastSymbol = c;
 }
 
-ShuntingYard::isUnaryMinus()
+bool ShuntingYard::isUnaryMinus()
 {
   // Only consider a minus sign to be a unary minus
   // if it is the first symbol or is preceeded by a left parenthesis.
-  switch lastSymbol
+  switch(lastSymbol)
   {
     case '\0':
     case '(':
       return true;
-      break;
   }
 
   return false;
 }
 
-ShuntingYard::handleInfixOperator(char c)
+void ShuntingYard::handleInfixOperator(char c)
 {
+  std::cout << "handleInfix: '" << c << "'" << std::endl;
   finalizeNumber();
 
   while(
@@ -96,70 +121,98 @@ ShuntingYard::handleInfixOperator(char c)
     )
     popOperator();
 
-  operatorQueue.push(c);
+  operatorStack.push(c);
 }
 
-ShuntingYard::getOperatorPrecedence(char c)
+int ShuntingYard::getOperatorPrecedence(char c)
 {
   // Higher precedence operators are evaluated first
-  switch c
+  std::cout << "getOperatorPrecedence '" << c << "'" << std::endl;
+  switch(c)
   {
+    case '^':
+      return 2;
+
     case '*':
     case '/':
       return 1;
-      break;
 
     case '+':
     case '-':
       return 0;
-      break;
+
+    default:
+      return 0;
   }
 }
 
-ShuntingYard::frontOperatorHasLowerPrecedence(char c)
+bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 {
-  return getOperatorPrecedence(operatorQueue.front()) < getOperatorPrecedence(c);
+  std::cout << "frontOperatorHasLowerPrecedence '" << c << "'" << std::endl;
+  if(operatorStack.size() > 0)
+    return getOperatorPrecedence(operatorStack.top()) < getOperatorPrecedence(c);
+
+  else
+    return false;
+
 }
 
-ShuntingYard::frontOperatorIsNotLeftParenthesis()
+bool ShuntingYard::frontOperatorIsNotLeftParenthesis()
 {
-  return operatorQueue.front() != '(';
+  std::cout << "frontOperatorIsNotLeftParenthesis" << std::endl;
+  if(operatorStack.size() > 0)
+    return operatorStack.top() != '(';
+  else
+    return false;
 }
 
-ShuntingYard::popOperator()
+void ShuntingYard::popOperator()
 {
-  outputQueue.push(operatorQueue.pop())
+  std::cout << "popOperator (" << operatorStack.size() << ")" << std::endl;
+  std::cout << "pop '" << operatorStack.top() << "'" << std::endl;
+  std::stringstream ss;
+  std::string s(1, operatorStack.top());
+  outputQueue.push(s);
+  operatorStack.pop();
 }
 
-ShuntingYard::handleParenthesis(char c)
+void ShuntingYard::handleParenthesis(char c)
 {
+  std::cout << "handleParenthesis '" << c << "'" << std::endl;
   finalizeNumber();
 
-  switch c
+  switch(c)
   {
     case '(':
-      operatorQueue.push(c);
+      operatorStack.push(c);
       break;
     case ')':
-      // TODO: Handle mismsatched parens
       while(frontOperatorIsNotLeftParenthesis())
         popOperator();
-      // Pop the left parenthesis
-      popOperator();
-
+      // Pop (without pushing) the left parenthesis
+      if(operatorStack.top() == '(')
+        operatorStack.pop();
+      else
+        handleMismatchedParentheses();
   }
 }
 
-ShungingYard::finalizeNumber()
+void ShuntingYard::finalizeNumber()
 {
+  std::cout << "finalizeNumber '" << numberStr << "'" << std::endl;
   // Finish handling number if we were previously doing so
-  if(numberStr.length > 0) {
-    outputQueue.push();
+  if(numberStr.length() > 0) {
+    outputQueue.push(numberStr);
     numberStr = "";
   }
 }
 
-ShuntingYard::handleMismatchedParentheses()
+void ShuntingYard::handleMismatchedParentheses()
 {
   fail();
+}
+
+void ShuntingYard::fail()
+{
+    std::cout << "FAIL" << std::endl;
 }

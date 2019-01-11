@@ -26,10 +26,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    ShuntingYard.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    ShuntingYard.h
 
 FORMS += \
         mainwindow.ui

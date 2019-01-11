@@ -5,6 +5,8 @@
 #include <QKeyEvent>
 #include <iostream>
 
+#include "ShuntingYard.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -27,6 +29,8 @@ private:
     void clear();
     void clearAll();
     void compute();
+
+    ShuntingYard shuntingYard;
 };
 
 #endif // MAINWINDOW_H

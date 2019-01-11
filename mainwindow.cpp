@@ -1,5 +1,3 @@
-#include <iostream>
-#include <QKeyEvent>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -99,8 +97,11 @@ void MainWindow::appendDisplay(char c)
 
 void MainWindow::clear()
 {
-    ui->numberDisplay->setText(ui->numberDisplay->text().chopped(1));
-    std::cout << "Clear: '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+    if(ui->numberDisplay->text().size() > 0)
+    {
+        ui->numberDisplay->setText(ui->numberDisplay->text().chopped(1));
+        std::cout << "Clear: '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+    }
 
 }
 
@@ -112,6 +113,13 @@ void MainWindow::clearAll()
 
 void MainWindow::compute()
 {
+    std::string inputStr(ui->numberDisplay->text().toUtf8().data());
     std::cout << "Compute!" << std::endl;
+    shuntingYard.reset();
+    std::cout << "Parsing infix:" << "'" << inputStr << "'" << std::endl;
+    shuntingYard.parseInfix(inputStr);
+    std::cout << "PrintRPN" << std::endl;
+    std::cout << "input: '" << inputStr << "'" << std::endl;
+    shuntingYard.printRPN();
     clearAll();
 }
