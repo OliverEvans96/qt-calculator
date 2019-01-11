@@ -66,7 +66,7 @@ double ShuntingYard::evaluateRPN()
     // Handle operand
     if(isNumberQueue.front())
     {
-      operandStack.push(std::stod(outputQueue.front()));
+      operandStack.push(getNumberFromOutputQueue());
       outputQueue.pop();
       isNumberQueue.pop();
     }
@@ -79,16 +79,31 @@ double ShuntingYard::evaluateRPN()
         outputQueue.pop();
         isNumberQueue.pop();
 
-        operand2 = operandStack.top();
-        operandStack.pop();
-        operand1 = operandStack.top();
-        operandStack.pop();
-        result = applyOperator(oper, operand1, operand2);
-        operandStack.push(result);
+        if(operandStack.size() > 1)
+        {
+            operand2 = operandStack.top();
+            operandStack.pop();
+            operand1 = operandStack.top();
+            operandStack.pop();
+            result = applyOperator(oper, operand1, operand2);
+            operandStack.push(result);
+        }
+        else
+        {
+            handleSyntaxError();
+        }
     }
   }
-  result = operandStack.top();
-  operandStack.pop();
+  if(operandStack.size() > 0)
+  {
+      result = operandStack.top();
+      operandStack.pop();
+  }
+  else
+  {
+      handleSyntaxError();
+  }
+
   return result;
 }
 
@@ -194,6 +209,15 @@ bool ShuntingYard::frontOperatorHasLowerPrecedence(char c)
 
 }
 
+bool ShuntingYard::frontOperatorIsLeftParenthesis()
+{
+  std::cout << "frontOperatorIsLeftParenthesis" << std::endl;
+  if(operatorStack.size() > 0)
+    return operatorStack.top() == '(';
+  else
+    return false;
+}
+
 bool ShuntingYard::frontOperatorIsNotLeftParenthesis()
 {
   if(operatorStack.size() > 0)
@@ -262,7 +286,7 @@ void ShuntingYard::handleParenthesis(char c)
       while(frontOperatorIsNotLeftParenthesis())
         popOperator();
       // Pop (without pushing) the left parenthesis
-      if(operatorStack.top() == '(')
+      if(frontOperatorIsLeftParenthesis())
         operatorStack.pop();
       else
       {
@@ -270,6 +294,20 @@ void ShuntingYard::handleParenthesis(char c)
         return;
       }
   }
+}
+
+double ShuntingYard::getNumberFromOutputQueue()
+{
+    std::string s = outputQueue.front();
+
+    // Make sure we don't try to convert a single minus sign
+    if(s.data()[0] == '-' && s.length() == 1)
+    {
+        handleSyntaxError();
+        return 0;
+    }
+    else
+        return std::stod(s);
 }
 
 void ShuntingYard::finalizeNumber()

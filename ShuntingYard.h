@@ -30,10 +30,12 @@ private:
   void handleInfixOperator(char c);
   int getOperatorPrecedence(char c);
   void handleParenthesis(char c);
+  double getNumberFromOutputQueue();
   void finalizeNumber();
 
   bool frontOperatorHasLowerPrecedence(char c);
   bool frontOperatorIsNotLeftParenthesis();
+  bool frontOperatorIsLeftParenthesis();
   bool frontOperatorIsNotRightParenthesis();
   bool frontOperatorIsNotParenthesis();
 
