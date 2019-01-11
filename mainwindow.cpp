@@ -84,6 +84,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
         case Qt::Key_Backspace: clear();
              break;
+        case Qt::Key_Equal:
         case Qt::Key_Return: compute();
              break;
         }
