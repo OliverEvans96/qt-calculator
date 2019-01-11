@@ -91,29 +91,29 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::appendDisplay(char c)
 {
-    ui->numberDisplay->setText(ui->numberDisplay->text().append(c));
-    std::cout << "Appending " << c << ": '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+    ui->inputDisplay->setText(ui->inputDisplay->text().append(c));
+    std::cout << "Appending " << c << ": '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
 }
 
 void MainWindow::clear()
 {
-    if(ui->numberDisplay->text().size() > 0)
+    if(ui->inputDisplay->text().size() > 0)
     {
-        ui->numberDisplay->setText(ui->numberDisplay->text().chopped(1));
-        std::cout << "Clear: '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+        ui->inputDisplay->setText(ui->inputDisplay->text().chopped(1));
+        std::cout << "Clear: '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
     }
 
 }
 
 void MainWindow::clearAll()
 {
-    ui->numberDisplay->setText("");
-    std::cout << "Clear all: '" << ui->numberDisplay->text().toUtf8().constData() << "'" << std::endl;
+    ui->inputDisplay->setText("");
+    std::cout << "Clear all: '" << ui->inputDisplay->text().toUtf8().constData() << "'" << std::endl;
 }
 
 void MainWindow::compute()
 {
-    std::string inputStr(ui->numberDisplay->text().toUtf8().data());
+    std::string inputStr(ui->inputDisplay->text().toUtf8().data());
     std::cout << "Compute!" << std::endl;
     shuntingYard.reset();
     std::cout << "Parsing infix:" << "'" << inputStr << "'" << std::endl;
@@ -124,5 +124,7 @@ void MainWindow::compute()
     std::cout << "EvaluateRPN" << std::endl;
     double result = shuntingYard.evaluateRPN();
     std::cout << "= " << result << std::endl;
+    ui->resultDisplay->display(result);
+    ui->oldInputDisplay->setText(ui->inputDisplay->text().append(" ="));
     clearAll();
 }
