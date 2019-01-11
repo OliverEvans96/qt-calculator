@@ -6,13 +6,28 @@ Infix input, parsed to RPN via the shunting yard algorithm for evaluation.
 
 Written in C++ / Qt.
 
-## Screenshot
+## Features
 
-![](calculator-screenshot.png)
+- Infix input
+- GUI entry
+- Keyboard input
+- Arithmetic operations (+, -, \*, /, ^)
+- Grouping (parentheses)
+- Clear (backspace) / Clear All (ctrl-backspace)
+- Syntax error / zero division handling
 
 ## Usage
+
+Make and run!
 
 ```
 make
 ./calculator
 ```
+
+## Screenshot
+
+How beautiful :blush:
+
+![](calculator-screenshot.png)
+
