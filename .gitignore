@@ -1,0 +1,4 @@
+*.o
+calculator
+moc_*
+ui_mainwindow.h
